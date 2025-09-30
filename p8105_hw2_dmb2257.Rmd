@@ -28,3 +28,39 @@ plot(pressure)
 ```
 
 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+```{r}
+getwd()
+```
+
+```{r}
+library(tidyverse)
+library(janitor)
+library(readxl)
+```
+
+```{r}
+unemployment_df = read_csv(file = "./p8105_hw2_data/unemployment.csv")
+janitor::clean_names(unemployment_df)
+```
+
+```{r}
+polsmonth_df = read_csv(file = "./p8105_hw2_data/polsmonth.csv")
+
+janitor::clean_names(polsmonth_df) |>
+separate(mon, into = c("year", "month", "day"))
+```
+
+```{r}
+snp_df = read_csv(file = "./p8105_hw2_data/snp.csv")
+janitor::clean_names(snp_df)
+```
+
+```{r}
+
+```
+
+
+
+
+
