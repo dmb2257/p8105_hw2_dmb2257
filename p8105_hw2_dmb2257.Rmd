@@ -28,39 +28,160 @@ plot(pressure)
 ```
 
 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+## Get working directory
 
 ```{r}
 getwd()
 ```
 
+
+## Load packages
 ```{r}
 library(tidyverse)
 library(janitor)
 library(readxl)
 ```
 
-```{r}
-unemployment_df = read_csv(file = "./p8105_hw2_data/unemployment.csv")
-janitor::clean_names(unemployment_df)
-```
+
+## Unemployment Dataframe
+read_csv: reads the unemployment_df file
+janitor:this cleans names for unemployment_df,
+select:selects the year and month columns,
+pivot_longer: moves the Jan-Dec columns to a new column, "month", and places the values under percentages
+mutate: renames the abbreviated months to the full month name
+
 
 ```{r}
-polsmonth_df = read_csv(file = "./p8105_hw2_data/polsmonth.csv")
-
-janitor::clean_names(polsmonth_df) |>
-separate(mon, into = c("year", "month", "day"))
+unemployment_df = 
+  read_csv(file = "./p8105_hw2_data/unemployment.csv")
+  janitor::clean_names(unemployment_df) |>
+  
+  select(year, jan, feb, mar, apr, may, jun, jul, aug, sep, oct, nov, dec) |>
+  
+  pivot_longer(
+    jan:dec, 
+    names_to = "month",
+    values_to = "percentages") |>
+    
+  mutate(
+    month = 
+      case_match(
+       month,
+       "jan" ~ "January",
+       "feb" ~ "February",
+       "mar" ~ "March",
+       "apr" ~ "April",
+       "may" ~ "May",
+       "jun" ~ "June",
+       "jul" ~ "July",
+       "aug" ~ "August",
+       "sep" ~ "September",
+       "oct" ~ "October",
+       "nov" ~ "November",
+       "dec" ~ "December"),
+     month = as.factor(month))
+  
 ```
+
+##Pols-month dataframe 
+read_csv: this reads the file polsmonth_df
+janitor: this cleans_names for polsmonth_df
+separate: this separates the date (mon) into the year, month, and date
+mutate: this renames the numeric month to the full month name
+select: this selects all variables except for day, prez_gop, and prez_dem
+pivot_longer: this takes values from prez_gop and prez_dem and places them into new variable "president"
+mutate: this renames prez_gop in into gop and prez_dem into dem 
+filter: this only includes datapoints that were yes for dem or gop. 
+
+```{r}
+polsmonth_df = 
+  read_csv(
+    file = "./p8105_hw2_data/polsmonth.csv") 
+
+  janitor::clean_names(polsmonth_df) |>
+  
+  separate(mon, into = c("year", "month", "day")) |>
+
+  mutate(
+    month = 
+      case_match(
+       month,
+       "01" ~ "January",
+       "02" ~ "February",
+       "03" ~ "March",
+       "04" ~ "April",
+       "05" ~ "May",
+       "06" ~ "June",
+       "07" ~ "July",
+       "08" ~ "August",
+       "09" ~ "September",
+       "10" ~ "October",
+       "11" ~ "November",
+       "12" ~ "December"),
+     month = as.factor(month)) |>
+    select(year, month, prez_gop, prez_dem, gov_gop, gov_dem, sen_gop, sen_dem, rep_gop, rep_dem) |>
+    
+  pivot_longer(
+    prez_gop:prez_dem,
+    names_to = "president") |>
+    
+  mutate(
+    president = case_match(
+      president,
+      "prez_gop" ~ "gop",
+      "prez_dem" ~ "dem")) |>
+    
+  filter(value == 1)
+```
+
+
+## SNP Dataframe
+
+read_csv: this reads the file snp.csv
+janitor: this cleans snp_df
+separate: this separates the date into month, day and year
+mutate: this renames the numeric month into the full month name
+relocate: this reorders the columns to be year then month then close 
+select(-day): this removes the variable day
 
 ```{r}
 snp_df = read_csv(file = "./p8105_hw2_data/snp.csv")
-janitor::clean_names(snp_df)
+janitor::clean_names(snp_df) |>
+
+separate(date, into = c("month", "day", "year")) |>
+
+  mutate(
+    month = 
+      case_match(
+       month,
+       "01" ~ "January",
+       "02" ~ "February",
+       "03" ~ "March",
+       "04" ~ "April",
+       "05" ~ "May",
+       "06" ~ "June",
+       "07" ~ "July",
+       "08" ~ "August",
+       "09" ~ "September",
+       "10" ~ "October",
+       "11" ~ "November",
+       "12" ~ "December"),
+     month = as.factor(month)) |>
+    relocate(year, month, close)|>
+    select(-day)|>
+  
+print(n = 787)
 ```
 
+##Trashwheel Data Frame
+read_csv: this reads trashwheel.csv
+janitor: this cleans_names for trashwheel_df
 ```{r}
-
+getwd()
+trashwheeldata_df =
+  read_csv(file = "./p8105_hw2_data/trashwheeldata.csv")
+  janitor::clean_names(trashwheeldata_df)
 ```
-
-
 
 
 
