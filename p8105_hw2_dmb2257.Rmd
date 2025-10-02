@@ -174,14 +174,41 @@ print(n = 787)
 ```
 
 ##Trashwheel Data Frame
-read_csv: this reads trashwheel.csv
-janitor: this cleans_names for trashwheel_df
+read_csv: this reads trashwheeldata.csv
+janitor: this cleans_names for trashwheeldata_df
 ```{r}
 getwd()
 trashwheeldata_df =
   read_csv(file = "./p8105_hw2_data/trashwheeldata.csv")
   janitor::clean_names(trashwheeldata_df)
+    
 ```
 
 
+## Problem3
+```{r}
+zori_df = 
+  read_csv(
+    file = "./p8105_hw2_data/zori.csv")
+  
+  janitor::clean_names(zori_df) |>
+  mutate(
+    county_name = 
+      case_match(
+        county_name,
+        "Kings County" ~"Kings",
+        "Bronx County" ~ "Bronx",
+        "New York County" ~ "New York",
+        "Queens County" ~ "Queens",
+        "Richmond County" ~ "Richmond"),
+    county_name = as.factor(county_name))
+
+
+```
+
+```{r}
+zipcodes_df = 
+  read_csv(file = "./p8105_hw2_data/zipcodes.csv")
+janitor::clean_names(zipcodes_df)
+```
 
